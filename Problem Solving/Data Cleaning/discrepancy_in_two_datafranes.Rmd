@@ -1,0 +1,118 @@
+---
+title: "Finding Discrepancy in Data-Files using Tidyverse"
+author: "Monika Baloda"
+date: "2023-04-07"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+
+***The Problem***
+There are two dataframe recording observations some fields on same IDs, some of them are overlaping in both the datasets. 
+Each data frame has 100k IDs and 11 fields.  
+Not all of the IDs or fields match between both files; 70k IDs match and 7 fields + ID match between both files. 
+Of the 70k IDs that match, and the 7 fields that match, all values should be the same in both files. If they are not, then we call it discrepancy. 
+We need to find the discrepancies from these two datasets and you must find them.
+
+
+***Analysis***
+
+**Step 0: loading the library**
+```{r, warning=F}
+library(tidyverse)
+```
+
+
+**Step 1: Read two files**
+```{r}
+setwd("C:/Users/EndUser/Desktop/UCR/Spring2023/STAT208/Challanges/Challange1")
+
+df1=read.csv("Challenge1_Dataframe1.csv")
+df2=read.csv("Challenge1_Dataframe2.csv")
+```
+
+
+**Step 2: Merge dataframes by ID and keep common 7 fields from each of the dataframe**
+
+We use inner join to keep the IDs that matches in both the dataframes. 
+```{r}
+#merging dataframes
+merged_df = inner_join(df1, df2, by = "ID")
+
+#keeping matched fields only
+merged_df_selected = select(merged_df, ID, Income..Dollars..x,Gender.x,Town.x,Region.x,
+                                Internal.IP.Address.x,Customer.Age.Years.x, Encrypted.Password.x,
+                            Income..Dollars..y,Gender.y,Town.y,Region.y,
+                          Internal.IP.Address.y,Customer.Age.Years.y,Encrypted.Password.y)
+```
+
+
+**Step 3 : Comparing the values of individual fields of two dataframes**
+
+
+*Comparing income from df1 to income from df2*
+```{r}
+# compare values in col1 and col2 and return logical vector
+false_rows_income = which(merged_df_selected$Income..Dollars..x != merged_df_selected$Income..Dollars..y)
+
+#this prints ID number of the dataset.
+merged_df_selected[false_rows_income, "ID"]
+```
+
+*Comparing gender from df1 to income from df2*
+```{r}
+false_rows_gender = which(merged_df_selected$Gender.x != merged_df_selected$Gender.y)
+merged_df_selected[false_rows_gender, "ID"]
+```
+
+```{r}
+false_rows_Town = which(merged_df_selected$Town.x != merged_df_selected$Town.y)
+merged_df_selected[false_rows_Town, "ID"]
+```
+
+```{r}
+false_rows_Region = which(merged_df_selected$Region.x != merged_df_selected$Region.y)
+merged_df_selected[false_rows_Region, "ID"]
+```
+
+```{r}
+false_rows_IP= which(merged_df_selected$Internal.IP.Address != merged_df_selected$Internal.IP.Address.y)
+merged_df_selected[false_rows_IP, "ID"]
+
+```
+
+```{r}
+false_rows_age = which(merged_df_selected$Customer.Age.Years.x != merged_df_selected$Customer.Age.Years.y)
+merged_df_selected[false_rows_age, "ID"]
+
+```
+
+```{r}
+false_rows_pass = which(merged_df_selected$Encrypted.Password.x != merged_df_selected$Encrypted.Password.y)
+merged_df_selected[false_rows_pass, "ID"]
+
+```
+
+***Final Answer***
+So the IDs with discrepancies are: 
+
+
+    ID       Field
+    
+1. 140701   Customer.Age.Years
+
+2. 934535   Customer.Age.Years
+
+3. 655190    Town
+
+4. 59305     Income..Dollars.
+
+5. 497167   Income..Dollars.
+
+6. 860991   Region
+
+7. 410858  Encrypted.Password
+
+8. 985681  Encrypted.Password
