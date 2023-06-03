@@ -1,0 +1,11 @@
+
+Anomaly detection has many different applications. We can use it to find bad quality data.
+Anomalies can be sometime a good desired property for example when it comes to customer surveys,
+anomalies can pull out surveys where people spend more time taking the survey  and contain the most
+informative information (most survey respondents tend to rush through surveys, anomaly respondents 
+tend to think more through the survey).  Normally surveys have a huge amount of multicollinearity as people 
+tend to click through them quickly,  interestingly enough much of that multicollinearity is reduced through 
+this anomaly algorithm. This makes building insightful supervised models with survey data much easier.
+
+In the problem I analyzed, I use Principal Component Analysis (PCA) algorithm to detect the anomalies. 
+I hereby attach the knitted PDF and R-markdown file. 
